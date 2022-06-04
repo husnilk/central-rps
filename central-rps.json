@@ -1,0 +1,46 @@
+{
+    "openapi":"3.1.0",
+    "info":{
+        "title": "Central-RPS API",
+        "description": "Dokumentasi Resftul API untuk Central modul RPS",
+        "version": "1.0.0",
+        "termOfService": "https://si.it.unand.ac.id",
+        "contact": {
+            "name": "Husnil Kamil",
+            "url": "https://husnilk.blogspot.com",
+            "email": "husnilk@it.unand.ac.id"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:300/",
+            "description": "Server untuk Central RPS API"
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post" : {
+                "summary": "Endpoint untuk login",
+                "description": "Authenticate user using credentials",
+                "response": {},
+                "parameters": [
+                    {
+                        "name": "username",
+                        "required": true,
+                        "in": "query"
+                    },
+                    {
+                        "name": "password",
+                        "required": true,
+                        "in": "query"
+                    }
+                ]
+            }
+        }
+    }
+
+}
