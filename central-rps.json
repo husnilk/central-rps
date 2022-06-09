@@ -1,10 +1,10 @@
 {
-    "openapi":"3.1.0",
-    "info":{
-        "title": "Central-RPS API",
+    "openapi":"3.0.3",
+    "info": {
+        "title": "Central API",
         "description": "Dokumentasi Resftul API untuk Central modul RPS",
         "version": "1.0.0",
-        "termOfService": "https://si.it.unand.ac.id",
+        "termsOfService": "https://si.fti.unand.ac.id",
         "contact": {
             "name": "Husnil Kamil",
             "url": "https://husnilk.blogspot.com",
@@ -17,16 +17,17 @@
     },
     "servers": [
         {
-            "url": "http://localhost:300/",
-            "description": "Server untuk Central RPS API"
+            "url": "https://api.server.test/v1",
+            "description": "Production Server untuk API Server"
         }
     ],
+
     "paths": {
         "/auth/login": {
             "post" : {
                 "summary": "Endpoint untuk login",
                 "description": "Authenticate user using credentials",
-                "response": {},
+                "responses": {},
                 "parameters": [
                     {
                         "name": "username",
@@ -40,7 +41,37 @@
                     }
                 ]
             }
-        }
-    }
+        },
+        "/auth/logout":{},
 
+        "/rps/": {},
+        "/rps/search": {},
+        "/rps/{rpsId}": {},
+        "/rps/{rpsId}/export": {},
+
+        "/bo/rps/": {},
+        "/bo/rps/{rpsId}": {},
+        "/bo/rps/create": {},
+
+        "/bo/rps/{rpsId}/cpmk": {},
+        "/bo/rps/{rpsId}/cpmk/{cpmkId}": {},
+
+        "/bo/rps/{rpsId}/refs": {},
+        "/bo/rps/{rpsId}/refs/{refId}": {},
+
+        "/bo/rps/{rpsId}/assessments": {},
+        "/bo/rps/{rpsId}/assessments/{assesmentId}": {},
+
+        "/bo/rps/{rpsId}/weekly": {},
+        "/bo/rps/{rpsId}/weekly/{weekly}": {},
+
+        "/bo/rps/{rpsId}/lecturers": {},
+        "/bo/rps/{rpsId}/lecturers/{lecturerId}":{},
+        
+        "/bo/report/map": {},
+        "/bo/report/map/export":{},
+
+        "/bo/report/pjbl":{},
+        "/bo/report/pjbl/export": {}
+    }
 }
