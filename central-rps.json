@@ -2,7 +2,7 @@
     "openapi":"3.0.3",
     "info": {
         "title": "Central API",
-        "description": "Dokumentasi Resftul API untuk Central modul RPS",
+        "description": "Ini adalah dokumentasi Restful API untuk aplikasi **CSI**. Aplikasi CSI merupakan singkatan dari Central SI dimana aplikasi ini merupakan aplikasi yang digunakan untuk mengelola data di Jurusan Sistem Informasi",
         "version": "1.0.0",
         "termsOfService": "https://si.fti.unand.ac.id",
         "contact": {
@@ -21,56 +21,208 @@
             "description": "Production Server untuk API Server"
         }
     ],
-
+    
     "paths": {
         "/auth/login": {
             "post" : {
-                "summary": "Endpoint untuk login",
-                "description": "Authenticate user using credentials",
-                "responses": {},
+                "tags": ["Authentication"],
+                "summary": "User Login",
+                "description": "Otentikasi user menggunakan username dan password",
+                "requestBody":{
+                    "description": "Username untuk login",
+                    "required": true,
+                    "content": {
+                        "application/json":{
+                            "examples": {
+                                "sample_user":{
+                                    "description": "Contoh data username",
+                                    "value": {
+                                        "username": "hsuerajdla",
+                                        "password": "password"
+                                    }
+                                }
+                            },
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username":{
+                                        "type": "string",
+                                        "required":  true
+                                    },
+                                    "password":{
+                                        "type": "string",
+                                        "required": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login sukses",
+                        "content":{
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "datetime": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success":{
+                                        "value": {
+                                            "message": "Login Berhasil",
+                                            "token": "djfasdljflsajf;alsfjdlak;k",
+                                            "datetime": 121231
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Gagal login",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "datetime": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "failed":{
+                                        "value": {
+                                            "message": "Gagal Login",
+                                            "datetime": 121212121
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "User Logout",
+                "description": "Nonaktifkan token user dari sistem",
+                "responses": {
+                    "200": {
+                        "description": "Logout Response",
+                        "content": {
+                            "application/json": {
+                                "schema":{
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "datetime": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "userlogout":{
+                                        "value": {
+                                            "message": "Kenapa belum selesai nak",
+                                            "datetime": 12131231
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }  
+        },
+        "/rps/": {
+            "get": {
+                "summary": "List seluruh RPS",
+                "description": "Get All RPS dari dalam database"
+            },
+            "post": {
+                "summary": "Search RPS",
+                "description": "Cari RPS berdasarkan nama atau kode"
+            }
+        },
+        "/rps/{rpsId}": {
+            "get":{
+                "summary": "Detail RPS",
+                "description": "Ambil data RPS secara lengkap (deskripsi, referensi, CP, CPMK dsb)",
                 "parameters": [
                     {
-                        "name": "username",
+                        "name": "rpsid",
+                        "in": "path",
                         "required": true,
-                        "in": "query"
-                    },
-                    {
-                        "name": "password",
-                        "required": true,
-                        "in": "query"
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "examples": {
+                            "rpsid": {
+                                "value": 1
+                            }
+                        }
                     }
                 ]
             }
         },
-        "/auth/logout":{},
-
-        "/rps/": {},
-        "/rps/search": {},
-        "/rps/{rpsId}": {},
-        "/rps/{rpsId}/export": {},
-
+        "/rps/{rpsId}/export": {
+            "post": {
+                "summary": "Export/Print RPS",
+                "description": "Export RPS dalam bentuk PDF untuk didownload oleh pengguna",
+                "parameters": [
+                    {
+                        "name": "rpsid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ]
+            }
+        },
+        
         "/bo/rps/": {},
         "/bo/rps/{rpsId}": {},
         "/bo/rps/create": {},
-
+        
         "/bo/rps/{rpsId}/cpmk": {},
         "/bo/rps/{rpsId}/cpmk/{cpmkId}": {},
-
+        
         "/bo/rps/{rpsId}/refs": {},
         "/bo/rps/{rpsId}/refs/{refId}": {},
-
+        
         "/bo/rps/{rpsId}/assessments": {},
         "/bo/rps/{rpsId}/assessments/{assesmentId}": {},
-
+        
         "/bo/rps/{rpsId}/weekly": {},
         "/bo/rps/{rpsId}/weekly/{weekly}": {},
-
+        
         "/bo/rps/{rpsId}/lecturers": {},
         "/bo/rps/{rpsId}/lecturers/{lecturerId}":{},
         
         "/bo/report/map": {},
         "/bo/report/map/export":{},
-
+        
         "/bo/report/pjbl":{},
         "/bo/report/pjbl/export": {}
     }
