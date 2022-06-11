@@ -2,7 +2,7 @@
     "openapi":"3.0.3",
     "info": {
         "title": "Central API",
-        "description": "Ini adalah dokumentasi Restful API untuk aplikasi **CSI**. Aplikasi CSI merupakan singkatan dari Central SI dimana aplikasi ini merupakan aplikasi yang digunakan untuk mengelola data di Jurusan Sistem Informasi",
+        "description": "Dokumen ini adalah dokumentasi dari Restful API aplikasi CSI. CSI adalah Aplikasi yang digunakan di Jurusan Sistem Informasi Universitas Andalas dalam mengelola akademik mahasiswa",
         "version": "1.0.0",
         "termsOfService": "https://si.fti.unand.ac.id",
         "contact": {
@@ -33,15 +33,6 @@
                     "required": true,
                     "content": {
                         "application/json":{
-                            "examples": {
-                                "sample_user":{
-                                    "description": "Contoh data username",
-                                    "value": {
-                                        "username": "hsuerajdla",
-                                        "password": "password"
-                                    }
-                                }
-                            },
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -52,6 +43,15 @@
                                     "password":{
                                         "type": "string",
                                         "required": true
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "sample_user":{
+                                    "description": "Contoh data username",
+                                    "value": {
+                                        "username": "hsuerajdla",
+                                        "password": "password"
                                     }
                                 }
                             }
@@ -155,16 +155,57 @@
         },
         "/rps/": {
             "get": {
+                "tags": ["Lihat RPS"],
                 "summary": "List seluruh RPS",
-                "description": "Get All RPS dari dalam database"
+                "description": "Ambil seluruh data RPS dari dalam database",
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/rps_list"
+                                }
+                            }
+                        }
+                    }
+                }
             },
             "post": {
+                "tags": ["Lihat RPS"],
                 "summary": "Search RPS",
-                "description": "Cari RPS berdasarkan nama atau kode"
+                "description": "Pencarian RPS berdasarkan keyword yang diberikan.",
+                "parameters": [],
+                "requestBody":{
+                    "description": "keyword pencarian",
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties":{
+                                    "keyword":{"type": "string"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/rps_list"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/rps/{rpsId}": {
             "get":{
+                "tags": ["Lihat RPS"],
                 "summary": "Detail RPS",
                 "description": "Ambil data RPS secara lengkap (deskripsi, referensi, CP, CPMK dsb)",
                 "parameters": [
@@ -181,11 +222,24 @@
                             }
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "$ref": "#/components/schemas/rps_detail"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/rps/{rpsId}/export": {
             "post": {
+                "tags": ["Lihat RPS"],
                 "summary": "Export/Print RPS",
                 "description": "Export RPS dalam bentuk PDF untuk didownload oleh pengguna",
                 "parameters": [
@@ -197,24 +251,762 @@
                             "type": "integer"
                         }
                     }
-                ]
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon download PDF",
+                        "content": {
+                            "application/pdf":{
+                                "schema":{
+                                    "type": "file"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         
-        "/bo/rps/": {},
-        "/bo/rps/{rpsId}": {},
-        "/bo/rps/create": {},
+        "/bo/rps/": {
+            "get":{
+                "tags": ["Pengelolaan RPS"],
+                "summary": "List RPS yang diampu",
+                "description": "Endpoint ini digunakan untuk mengambil data RPS yang diampu oleh dosen yang bersangkutan",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/rps_list"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post":{
+                "tags":["Pengelolaan RPS"],
+                "summary": "Create/Revisi RPS baru",
+                "description": "Endpoint untuk membuat RPS baru jika RPS untuk mata kuliah ybs belum ada sebelumnya",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters":[],
+                "requestBody":{
+                    "description": "Data untuk buat RPS Baru",
+                    "required": true,
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "course_id":{
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "rps berhasil dibuat",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "$ref": "#/components/schemas/rps_response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bo/rps/{rpsId}": {
+            "get":{
+                "tags": ["Pengelolaan RPS"],
+                "summary": "Lihat Detail RPS",
+                "description": "Endpoint untuk mendapatkan data detail RPS",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/rps_detail"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put":{
+                "tags": ["Pengelolaan RPS"],
+                "summary": "Edit RPS",
+                "description": "Endpoint untuk mengedit RPS",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters":[
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/rps_response"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         
-        "/bo/rps/{rpsId}/cpmk": {},
-        "/bo/rps/{rpsId}/cpmk/{cpmkId}": {},
+        "/bo/rps/{rpsId}/cpmk": {
+            "get":{
+                "tags": ["Pengelolaan CPMK"],
+                "summary": "List CPMK",
+                "description": "Endpoint ini untuk menampilkan data seluruh CPMK mata kuliah tertentu",
+                "security": [
+                    {
+                        "CentralAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "applicaton/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties":{
+                                        "count":{
+                                            "type": "integer"
+                                        },
+                                        "datetime":{
+                                            "type": "string"
+                                        },
+                                        "cpmk":{
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id":{"type": "integer"},
+                                                    "code":{"type": "string"},
+                                                    "lo_name":{"type": "string"}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post":{
+                "tags": ["Pengelolaan CPMK"],
+                "summary": "Tambah CPMK",
+                "description": "Endpoint untuk menambahkan CPMK mata kuliah tertentu",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Data CPMK",
+                    "required": true,
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties":{
+                                    "code":{
+                                        "type": "string"
+                                    },
+                                    "name":{
+                                        "type": "string"
+                                    },
+                                    "clo_ids":{
+                                        "type": "array",
+                                        "items":{
+                                            "type":"integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bo/rps/{rpsId}/cpmk/{cpmkId}": {
+            "put":{
+                "tags": ["Pengelolaan CPMK"],
+                "summary": "Edit CPMK",
+                "description": "Endpoint ini digunakan untuk mengubah CPMK mata kuliah beserta CPL terkait",
+                "security":[
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {   
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/cpmkid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Data CPMK",
+                    "required": true,
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties":{
+                                    "id":{
+                                        "type": "integer"
+                                    },
+                                    "code":{
+                                        "type": "string"
+                                    },
+                                    "name":{
+                                        "type": "string"
+                                    },
+                                    "clo_ids":{
+                                        "type": "array",
+                                        "items":{
+                                            "type":"integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "respon sukses",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete":{
+                "tags": ["Pengelolaan CPMK"],
+                "summary": "Hapus CPMK",
+                "description": "Endpoint ini digunakan untuk menghapus CPMK sebuah Mata Kuliah",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters":[
+                    {   
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/cpmkid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "sukses hapus",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         
-        "/bo/rps/{rpsId}/refs": {},
-        "/bo/rps/{rpsId}/refs/{refId}": {},
+        "/bo/rps/{rpsId}/refs": {
+            "get":{
+                "tags": ["Pengelolaan Referensi"],
+                "summary": "List Referensi",
+                "description": "Endpoint untuk mengelola referensi yang digunakan dalam perkuliahan",
+                "security": [
+                    {
+                        "CentralAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type": "object",
+                                    "properties":{
+                                        "count": {
+                                            "type": "integer"
+                                        },
+                                        "datetime":{
+                                            "type": "string"
+                                        },
+                                        "refs":{
+                                            "type": "array",
+                                            "items":{
+                                                "type": "object",
+                                                "properties":{
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "category":{
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post":{
+                "tags": ["Pengelolaan Referensi"],
+                "summary": "Tambah Referensi",
+                "description": "Endpoint untuk menambahkan referensi ke dalam daftar referensi mata kuliah",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Data Referensi",
+                    "required": true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "rps_id":{"type": "string"},
+                                    "title":{"type": "string"},
+                                    "author":{"type": "string"},
+                                    "publisher":{"type": "string"},
+                                    "year":{"type": "integer"},
+                                    "description":{"type": "string"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "Referensi berhasil ditambahkan",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bo/rps/{rpsId}/refs/{refId}": {
+            "put":{
+                "tags": ["Pengelolaan Referensi"],
+                "summary": "Edit Referensi",
+                "description": "Endpoint untuk mengedit referensi perkuliahan dalam RPS",
+                "security": [
+                    {
+                        "CentralAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/refid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Edited data",
+                    "required": true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "ref_id":{"type": "string"},
+                                    "rps_id":{"type": "string"},
+                                    "title":{"type": "string"},
+                                    "author":{"type": "string"},
+                                    "publisher":{"type": "string"},
+                                    "year":{"type": "integer"},
+                                    "description":{"type": "string"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "sukses edit data",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete":{
+                "tags": ["Pengelolaan Referensi"],
+                "summary": "Hapus referensi RPS",
+                "description": "Enpoint untuk menghapus data referensi mata kuliah",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/refid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "sukses hapus data",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         
-        "/bo/rps/{rpsId}/assessments": {},
-        "/bo/rps/{rpsId}/assessments/{assesmentId}": {},
+        "/bo/rps/{rpsId}/assessments": {
+            "get": {
+                "tags": ["Komponen Penilaian"],
+                "summary" : "List Komponen Penilaian",
+                "description": "Ambil list seluruh komponen penilaian mata kuliah",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "sukses ambil data",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "count":{"type": "integer"},
+                                        "datetime": {"type": "string"},
+                                        "assessments":{
+                                            "type": "array",
+                                            "items":{
+                                                "type": "object",
+                                                "properties":{
+                                                    "id": {"type": "integer"},
+                                                    "name": {"type": "string"},
+                                                    "percentage": {"type": "number"}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Komponen Penilaian"],
+                "summary": "Tambah Komponen Penilaian",
+                "description": "Endpoint untuk menambahkan komponen penilaian pada RPS",
+                "security": [
+                    {
+                        "CentralAuth": []
+                    }
+                ],
+                "parameters":[
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Uploaded Data",
+                    "required": true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties": {
+                                    "rps_id":{"type": "integer"},
+                                    "name": {"type": "string"},
+                                    "percentage": {"type": "number"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200": {
+                        "description": "sukses input data",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bo/rps/{rpsId}/assessments/{assesmentId}": {
+            "put": {
+                "tags": ["Komponen Penilaian"],
+                "summary": "Edit Komponen Penilaian",
+                "description": "Endpoint untuk mengubah data komponen penilaian yang ada dalam RPS",
+                "security": [
+                    {
+                        "CentralAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/assessmentid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Uploaded Data",
+                    "required": true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties": {
+                                    "assessment_id": {"type": "integer"},
+                                    "rps_id":{"type": "integer"},
+                                    "name": {"type": "string"},
+                                    "percentage": {"type": "number"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "sukses update data",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete":{
+                "tags": ["Komponen Penilaian"],
+                "summary": "Hapus Komponen Penilaian",
+                "description": "Endpoint untuk menghapus komponen penilaian dari RPS",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/assessmentid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "Sukses hapus data",
+                        "content": {
+                            "application/json":{
+                                "schema":{
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         
-        "/bo/rps/{rpsId}/weekly": {},
+        "/bo/rps/{rpsId}/weekly": {
+            "get": {
+                "tags": ["Pertemuan Mingguan"],
+                "summary": "List Pertemuan Mingguan",
+                "description": "Ambil data list pertemuan mingguan RPS",
+                "security": [
+                    {
+                        "CentralAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "sukses ambil data",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties": {
+                                        "count":{"type":"integer"},
+                                        "datetime": {"type": "string"},
+                                        "weekly":{
+                                            "type": "array",
+                                            "items":{
+                                                "type": "object",
+                                                "properties":{
+                                                    "id": {"type": "integer"},
+                                                    "week_no": {"type": "integer"},
+                                                    "material": {"type": "string"},
+                                                    "method": {"type": "string"},
+                                                    "student_exp": {"type": "string"},
+                                                    "los":{
+                                                        "type":"array",
+                                                        "items":{
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {"type": "integer"},
+                                                                "name": {"type": "string"}
+                                                            }
+                                                        }
+                                                    },
+                                                    "assessments": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {"type": "integer"},
+                                                                "name": {"type": "string"},
+                                                                "percentage": {"type": "number"}
+                                                            }
+                                                        }
+                                                    },
+                                                    "refs":{
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": { "type": "integer"},
+                                                                "name": {"type": "string"},
+                                                                "category": {"type": "integer"}
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/bo/rps/{rpsId}/weekly/{weekly}": {},
         
         "/bo/rps/{rpsId}/lecturers": {},
@@ -225,5 +1017,201 @@
         
         "/bo/report/pjbl":{},
         "/bo/report/pjbl/export": {}
+    },
+    "components": {
+        "securitySchemes": {
+            "CentralAuth":{
+                "type":"http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "rps_list":{
+                "type": "object",
+                "properties": {
+                    "counts":{"type": "integer"},
+                    "datetime":{"type": "string"},
+                    "rps":{
+                        "type": "array",
+                        "items":{
+                            "type": "object",
+                            "properties": {
+                                "id":{"type": "integer"},
+                                "code": {"type": "string"},
+                                "name":{"type": "string"},
+                                "credit":{"type": "integer"},
+                                "semester":{"type": "integer"},
+                                "rev": {"type":"integer"},
+                                "created_at":{"type": "string"},
+                                "editable":{"type": "boolean", "default":"false"}
+                            }
+                        }
+                    }
+                }
+            },
+            "rps_detail":{
+                "type": "object",
+                "properties": {
+                    "course_id":{"type": "integer"},
+                    "course_code": {"type": "string"},
+                    "course_name":{"type": "string"},
+                    "course_credit":{"type": "integer"},
+                    "course_desc":{"type":"string"},
+                    "course_rev": {"type":"integer"},
+                    "course_semester":{"type": "integer"},
+                    "course_material":{"type": "string"},
+                    "course_created_at":{"type": "string"},
+                    "course_creator":{
+                        "type": "object",
+                        "properties": {
+                            "creator_id":{"type": "string"},
+                            "creator_name":{"type": "string"},
+                            "creator_regno":{"type": "string"}
+                        }
+                    },
+                    "course_validated_at":{"type": "string"},
+                    "course_validator":{
+                        "type": "object",
+                        "properties": {
+                            "validator_id":{"type": "string"},
+                            "validator_name":{"type": "string"},
+                            "validator_regno":{"type": "string"}
+                        }
+                    },
+                    "curriculum_lo":{
+                        "type": "array",
+                        "items":{
+                            "type": "object",
+                            "properties": {
+                                "id":{"type": "integer"},
+                                "code": {"type": "string"},
+                                "curriculum_lo_name":{"type": "string"}
+                            }
+                        }
+                    },
+                    "course_lo":{
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {"type": "integer"},
+                                "code":{"type": "string"},
+                                "lo_name":{"type": "string"}
+                            }
+                        }
+                    },
+                    "course_references":{
+                        "type":"array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "course_assesments":{
+                        "type": "array",
+                        "items":{
+                            "type":"object",
+                            "properties":{
+                                "name":{"type":"string"},
+                                "percentage":{"type": "number"}
+                            }
+                        }
+                    },
+                    "course_plans":{
+                        "type": "array",
+                        "items":{
+                            "type": "object",
+                            "properties":{
+                                "id":{"type": "string"},
+                                "week":{"type": "integer"},
+                                "material":{"type": "string"},
+                                "method":{"type": "string"},
+                                "student_exp":{"type": "string"},
+                                "references":{
+                                    "type": "array",
+                                    "items":{
+                                        "type": "object",
+                                        "properties": {
+                                            "ref_id":{"type":"string"},
+                                            "ref_name":{"type": "string"},
+                                            "ref_desc":{"type": "string"}
+                                        }
+                                    }
+                                },
+                                "assessments":{
+                                    "type": "object",
+                                    "properties": {
+                                        "id":{"type": "integer"},
+                                        "name": {"type": "string"},
+                                        "percentage":{"type":"number"}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "rps_response":{
+                "type": "object",
+                "properties":{
+                    "status":{
+                        "type": "string"
+                    },
+                    "message":{
+                        "type": "string"
+                    },
+                    "rps_id":{
+                        "type": "integer"
+                    },
+                    "datetime":{
+                        "type": "string"
+                    }
+                }
+            },
+            "item_created_updated_deleted":{
+                "type": "object",
+                "properties":{
+                    "status":{
+                        "type": "string"
+                    },
+                    "message":{
+                        "type": "string"
+                    },
+                    "id":{
+                        "type": "integer"
+                    },
+                    "datetime":{
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "parameters": {
+            "rpsid":{
+                "name": "rpsid",
+                "in": "path",
+                "required": true
+            },
+            "cpmkid":{
+                "name": "cpmk_id",
+                "in": "path",
+                "required": true
+            },
+            "refid":{
+                "name": "ref_id",
+                "in": "path",
+                "required": true
+            },
+            "assessmentid":{
+                "name": "assessment_id",
+                "in": "path",
+                "required": true
+            },
+            "weeklyid":{
+                "name": "weekly_id",
+                "in": "path",
+                "required": true
+            }
+        }
     }
 }
