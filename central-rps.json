@@ -929,7 +929,7 @@
             }
         },
         
-        "/bo/rps/{rpsId}/weekly": {
+        "/bo/rps/{rpsId}/session": {
             "get": {
                 "tags": ["Pertemuan Mingguan"],
                 "summary": "List Pertemuan Mingguan",
@@ -1005,12 +1005,307 @@
                         }
                     }
                 }
+            },
+            "post":{
+                "tags": ["Pertemuan Mingguan"],
+                "summary": "Tambah Pertemuan Mingguan",
+                "description": "Endpoint untuk menambahkan pertemuan mingguan",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Uploaded Data",
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "week_no": {"type": "integer"},
+                                    "material": {"type": "string"},
+                                    "method": {"type": "string"},
+                                    "student_exp": {"type": "string"},
+                                    "los":{
+                                        "type":"array",
+                                        "items":{
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {"type": "integer"},
+                                                "name": {"type": "string"}
+                                            }
+                                        }
+                                    },
+                                    "assessments": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {"type": "integer"},
+                                                "name": {"type": "string"},
+                                                "percentage": {"type": "number"}
+                                            }
+                                        }
+                                    },
+                                    "refs":{
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer"},
+                                                "name": {"type": "string"},
+                                                "category": {"type": "integer"}
+                                            }
+                                        }
+                                    }        
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "respon sukses entri data",
+                        "content":{
+                            "application/json":{
+                                "schema": {
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
-        "/bo/rps/{rpsId}/weekly/{weekly}": {},
+        "/bo/rps/{rpsId}/session/{sesionid}": {
+            "put":{
+                "tags": ["Pertemuan Mingguan"],
+                "summary": "Edit Pertemuan Mingguan",
+                "description": "Endpoint untuk mengubah pertemuan mingguan",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/weeklyid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "Uploaded Data",
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "rps_id": {"type": "integer"},
+                                    "week_id":{ "type": "integer"},
+                                    "week_no": {"type": "integer"},
+                                    "material": {"type": "string"},
+                                    "method": {"type": "string"},
+                                    "student_exp": {"type": "string"},
+                                    "los":{
+                                        "type":"array",
+                                        "items":{
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {"type": "integer"},
+                                                "name": {"type": "string"}
+                                            }
+                                        }
+                                    },
+                                    "assessments": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {"type": "integer"},
+                                                "name": {"type": "string"},
+                                                "percentage": {"type": "number"}
+                                            }
+                                        }
+                                    },
+                                    "refs":{
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": { "type": "integer"},
+                                                "name": {"type": "string"},
+                                                "category": {"type": "integer"}
+                                            }
+                                        }
+                                    }        
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "respon sukses update data",
+                        "content":{
+                            "application/json":{
+                                "schema": {
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete":{
+                "tags": ["Pertemuan Mingguan"],
+                "summary": "Hapus Pertemuan Mingguan",
+                "description": "Endpoint untuk menghapus pertemuan mingguan dari dalam RPS",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/weeklyid"
+                    }
+                ],
+                "responses": {
+                     "200": {
+                        "description": "sukses hapus data",
+                        "content":{
+                            "application/json":{
+                                "schema": {
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         
-        "/bo/rps/{rpsId}/lecturers": {},
-        "/bo/rps/{rpsId}/lecturers/{lecturerId}":{},
+        "/bo/rps/{rpsId}/lecturers": {
+            "get":{
+                "tags": ["Dosen Pengampu"],
+                "summary": "List Dosen Pengampu RPS",
+                "description": "Endpoint untuk mendapatkan data dosen pengampu RPS",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ], 
+                "responses":{
+                    "200":{
+                        "description": "Respon sukses",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"array",
+                                    "items":{
+                                        "type": "object",
+                                        "properties":{
+                                            "id":{"type":"integer"},
+                                            "name":{"type": "string"},
+                                            "regno":{"type": "string"}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post":{
+                "tags": ["Dosen Pengampu"],
+                "summary": "Tambah dosen Pengampu",
+                "description": "Endpoint untuk menambah dosen pengampu pada RPS",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    }
+                ],
+                "requestBody":{
+                    "description": "data dosen pengampu",
+                    "required": true,
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties":{
+                                    "rps_id":{"type": "integer"},
+                                    "lecturer_id":{"type": "integer"}
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200":{
+                        "description": "dosen berhasil ditambahkan",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bo/rps/{rpsId}/lecturers/{lecturerId}":{
+            "delete":{
+                "tags": ["Dosen Pengampu"],
+                "summary": "Hapus dosen pengampu",
+                "description": "Hapus data dosen dalam daftar dosen pengampu",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/rpsid"
+                    },
+                    {
+                        "$ref": "#/components/parameters/lectid"
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "dosen berhasil dihapus",
+                        "content": {
+                            "application/json":{
+                                "schema": {
+                                    "$ref": "#/components/schemas/item_created_updated_deleted"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         
         "/bo/report/map": {},
         "/bo/report/map/export":{},
@@ -1209,6 +1504,11 @@
             },
             "weeklyid":{
                 "name": "weekly_id",
+                "in": "path",
+                "required": true
+            },
+            "lectid":{
+                "name": "lecturer_id",
                 "in": "path",
                 "required": true
             }
