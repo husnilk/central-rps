@@ -1307,11 +1307,91 @@
             }
         },
         
-        "/bo/report/map": {},
-        "/bo/report/map/export":{},
+        "/bo/report/map": {
+            "get":{
+                "tags": ["Reporting"],
+                "summary": "Laporan CPMK - CPL",
+                "description": "Laporan peta CPMK terhadap CPL",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{}
+                            }
+                        }
+                    }
+                }
+            },
+            "post":{
+                "tags": ["Reporting"],
+                "summary": "Export Laporan CPMK - CPL",
+                "description": "Export laporan CPMK terhadap CPL",
+                "security":[
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description": "Requested Data",
+                        "content": {
+                            "application/json":{
+                                "schema":{}
+                            }
+                        }
+                    }
+                }
+            }
+        },
         
-        "/bo/report/pjbl":{},
-        "/bo/report/pjbl/export": {}
+        "/bo/report/pjbl":{
+            "get":{
+                "tags": ["Reporting"],
+                "summary": "Persentase PJBL / CBM",
+                "description": "Laporan Persentase PJBL / CBM",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "responses": {
+                    "200":{
+                        "description": "respon sukses",
+                        "content":{
+                            "application/json":{
+                                "schema":{}
+                            }
+                        }
+                    }
+                }
+            },
+            "post":{
+                "tags": ["Reporting"],
+                "summary": "Export Persentase PJBL / CBM",
+                "description": "Export laporan persentase PJBL  /CBM",
+                "security": [
+                    {
+                        "CentralAuth":[]
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description": "respon sukses",
+                        "content": {
+                            "application/json":{
+                                "schema":{}
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
     "components": {
         "securitySchemes": {
