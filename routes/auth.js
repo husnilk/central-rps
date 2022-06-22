@@ -1,6 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const jwt = require('jsonwebtoken');
 
+const generateAccessToken = function(username){
+    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: '1800s'});
+}
 
 router.post('/login', function (req, res, next) {
     var username = req.body.username;
@@ -8,9 +12,10 @@ router.post('/login', function (req, res, next) {
     
     var datetime = new Date().toISOString();
     if(username == "username" && password == "password"){
+        var token = generateAccessToken({username: username});
         var response = {
             message: "Login berhasil",
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+            token: token,
             datetime: datetime
         }
         res.json(response);
@@ -30,5 +35,8 @@ router.post('/logout', function (req, res, next) {
         datetime: datetime
     });
 });
+
+
+
 
 module.exports = router;
