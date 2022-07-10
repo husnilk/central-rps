@@ -4,9 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// Router setup
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var authRouter = require('./routes/auth')
+var authRouter = require('./routes/auth');
+var rpsRouter = require('./routes/rps');
+var cpmkRouter  = require('./routes/rps_cpmk');
+var mingguanRouter = require('./routes/rps_mingguan');
+var penilaianRouter = require('./routes/rps_penilaian');
+var referensiRouter = require('./routes/rps_referensi');
 
 var app = express();
 
@@ -23,6 +29,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/bo/rps', rpsRouter);
+app.use('/bo/rps/:rpsId/cpmk', cpmkRouter);
+app.use('/bo/rps/:rpsId/assessments', penilaianRouter);
+app.use('/bo/rps/:rpsId/references', referensiRouter);
+app.use('/bo/rps/:rpsId/weeks', mingguanRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
