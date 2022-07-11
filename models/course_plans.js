@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 var sequelize = require('../utils/connect');
+const Course = require('./courses');
 
 const attributes = {
   id: {
@@ -180,4 +181,6 @@ const options = {
   }]
 };
 const CoursePlan = sequelize.define("course_plans", attributes, options);
+CoursePlan.belongsTo(Course);
+
 module.exports = CoursePlan;
