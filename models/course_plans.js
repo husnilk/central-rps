@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../utils/connect')
+var sequelize = require('../utils/connect');
 
 const attributes = {
   id: {
@@ -11,141 +11,134 @@ const attributes = {
     comment: null,
     field: "id"
   },
-  username: {
+  course_id: {
+    type: DataTypes.BIGINT.UNSIGNED,
+    allowNull: false,
+    defaultValue: null,
+    primaryKey: false,
+    autoIncrement: false,
+    comment: null,
+    field: "course_id",
+    references: {
+      key: "id",
+      model: "courses"
+    }
+  },
+  rev: {
+    type: DataTypes.INTEGER(11),
+    allowNull: false,
+    defaultValue: null,
+    primaryKey: false,
+    autoIncrement: false,
+    comment: null,
+    field: "rev"
+  },
+  code: {
     type: DataTypes.STRING(255),
     allowNull: false,
     defaultValue: null,
     primaryKey: false,
     autoIncrement: false,
     comment: null,
-    field: "username"
+    field: "code"
   },
   name: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
+    type: DataTypes.TEXT,
+    allowNull: false,
     defaultValue: null,
     primaryKey: false,
     autoIncrement: false,
     comment: null,
     field: "name"
   },
-  email: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
-    defaultValue: null,
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "email",
-    unique: "users_email_unique"
-  },
-  email_verified_at: {
-    type: DataTypes.DATE,
-    allowNull: true,
-    defaultValue: null,
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "email_verified_at"
-  },
-  password: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
-    defaultValue: null,
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "password"
-  },
-  two_factor_secret: {
+  alias_name: {
     type: DataTypes.TEXT,
     allowNull: true,
     defaultValue: null,
     primaryKey: false,
     autoIncrement: false,
     comment: null,
-    field: "two_factor_secret"
+    field: "alias_name"
   },
-  two_factor_recovery_codes: {
+  credit: {
+    type: DataTypes.INTEGER(11),
+    allowNull: false,
+    defaultValue: null,
+    primaryKey: false,
+    autoIncrement: false,
+    comment: null,
+    field: "credit"
+  },
+  semester: {
+    type: DataTypes.INTEGER(11),
+    allowNull: false,
+    defaultValue: null,
+    primaryKey: false,
+    autoIncrement: false,
+    comment: null,
+    field: "semester"
+  },
+  mandatory: {
+    type: DataTypes.INTEGER(11),
+    allowNull: false,
+    defaultValue: null,
+    primaryKey: false,
+    autoIncrement: false,
+    comment: null,
+    field: "mandatory"
+  },
+  description: {
     type: DataTypes.TEXT,
     allowNull: true,
     defaultValue: null,
     primaryKey: false,
     autoIncrement: false,
     comment: null,
-    field: "two_factor_recovery_codes"
+    field: "description"
   },
-  type: {
-    type: DataTypes.INTEGER(11),
-    allowNull: false,
-    defaultValue: "1",
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "type"
-  },
-  active: {
-    type: DataTypes.INTEGER(11),
-    allowNull: false,
-    defaultValue: "1",
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "active"
-  },
-  avatar: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-    defaultValue: null,
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "avatar"
-  },
-  role: {
-    type: DataTypes.INTEGER(11),
-    allowNull: true,
-    defaultValue: null,
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "role"
-  },
-  token: {
+  material: {
     type: DataTypes.TEXT,
     allowNull: true,
     defaultValue: null,
     primaryKey: false,
     autoIncrement: false,
     comment: null,
-    field: "token"
+    field: "material"
   },
-  remember_token: {
-    type: DataTypes.STRING(100),
-    allowNull: true,
-    defaultValue: null,
-    primaryKey: false,
-    autoIncrement: false,
-    comment: null,
-    field: "remember_token"
-  },
-  current_team_id: {
+  created_by: {
     type: DataTypes.BIGINT.UNSIGNED,
     allowNull: true,
     defaultValue: null,
     primaryKey: false,
     autoIncrement: false,
     comment: null,
-    field: "current_team_id"
+    field: "created_by",
+    references: {
+      key: "id",
+      model: "users"
+    }
   },
-  profile_photo_path: {
-    type: DataTypes.TEXT,
+  validated_by: {
+    type: DataTypes.BIGINT.UNSIGNED,
     allowNull: true,
     defaultValue: null,
     primaryKey: false,
     autoIncrement: false,
     comment: null,
-    field: "profile_photo_path"
+    field: "validated_by",
+    references: {
+      key: "id",
+      model: "users"
+    }
+  },
+  validated_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: null,
+    primaryKey: false,
+    autoIncrement: false,
+    comment: null,
+    field: "validated_at"
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -167,10 +160,24 @@ const attributes = {
   }
 };
 const options = {
-  tableName: "users",
+  tableName: "course_plans",
   comment: "",
-  indexes: []
+  indexes: [{
+    name: "course_plans_course_id_foreign",
+    unique: false,
+    type: "BTREE",
+    fields: ["course_id"]
+  }, {
+    name: "course_plans_created_by_foreign",
+    unique: false,
+    type: "BTREE",
+    fields: ["created_by"]
+  }, {
+    name: "course_plans_validated_by_foreign",
+    unique: false,
+    type: "BTREE",
+    fields: ["validated_by"]
+  }]
 };
-const User = sequelize.define("users", attributes, options);
-
-module.exports = User;
+const CoursePlan = sequelize.define("course_plans", attributes, options);
+module.exports = CoursePlan;

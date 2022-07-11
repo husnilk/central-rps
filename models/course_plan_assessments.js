@@ -13,81 +13,45 @@ module.exports = sequelize => {
       comment: null,
       field: "id"
     },
-    course_syllabus_id: {
+    course_plan_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "course_syllabus_id",
+      field: "course_plan_id",
       references: {
         key: "id",
-        model: "course_syllabi_model"
+        model: "course_plans_model"
       }
     },
-    title: {
+    name: {
       type: DataTypes.STRING(255),
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "title"
+      field: "name"
     },
-    author: {
-      type: DataTypes.STRING(255),
+    percentage: {
+      type: DataTypes.DOUBLE,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "author"
+      field: "percentage"
     },
-    publisher: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "publisher"
-    },
-    year: {
+    flag: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "year"
-    },
-    type: {
-      type: DataTypes.INTEGER(11),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "type"
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "description"
-    },
-    primary: {
-      type: DataTypes.INTEGER(11),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "primary"
+      field: "flag"
     },
     created_at: {
       type: DataTypes.DATE,
@@ -109,15 +73,15 @@ module.exports = sequelize => {
     }
   };
   const options = {
-    tableName: "course_syl_references",
+    tableName: "course_plan_assessments",
     comment: "",
     indexes: [{
-      name: "FK_course_syl_references_course_syllabi",
+      name: "course_plan_assessments_course_plan_id_foreign",
       unique: false,
       type: "BTREE",
-      fields: ["course_syllabus_id"]
+      fields: ["course_plan_id"]
     }]
   };
-  const CourseSylReferencesModel = sequelize.define("course_syl_references_model", attributes, options);
-  return CourseSylReferencesModel;
+  const CoursePlanAssessmentsModel = sequelize.define("course_plan_assessments_model", attributes, options);
+  return CoursePlanAssessmentsModel;
 };

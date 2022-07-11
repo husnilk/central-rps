@@ -13,45 +13,31 @@ module.exports = sequelize => {
       comment: null,
       field: "id"
     },
-    course_syllabus_id: {
+    course_plan_detail_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "course_syllabus_id",
+      field: "course_plan_detail_id",
       references: {
         key: "id",
-        model: "course_syllabi_model"
+        model: "course_plan_details_model"
       }
     },
-    name: {
-      type: DataTypes.STRING(255),
+    course_lo_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "name"
-    },
-    percentage: {
-      type: DataTypes.DOUBLE,
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "percentage"
-    },
-    flag: {
-      type: DataTypes.INTEGER(11),
-      allowNull: false,
-      defaultValue: null,
-      primaryKey: false,
-      autoIncrement: false,
-      comment: null,
-      field: "flag"
+      field: "course_lo_id",
+      references: {
+        key: "id",
+        model: "course_los_model"
+      }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -73,15 +59,20 @@ module.exports = sequelize => {
     }
   };
   const options = {
-    tableName: "course_syl_assessments",
+    tableName: "course_plan_detail_outcomes",
     comment: "",
     indexes: [{
-      name: "FK_course_syl_assessments_course_syllabi",
+      name: "course_plan_detail_outcomes_course_plan_detail_id_foreign",
       unique: false,
       type: "BTREE",
-      fields: ["course_syllabus_id"]
+      fields: ["course_plan_detail_id"]
+    }, {
+      name: "course_plan_detail_outcomes_course_lo_id_foreign",
+      unique: false,
+      type: "BTREE",
+      fields: ["course_lo_id"]
     }]
   };
-  const CourseSylAssessmentsModel = sequelize.define("course_syl_assessments_model", attributes, options);
-  return CourseSylAssessmentsModel;
+  const CoursePlanDetailOutcomesModel = sequelize.define("course_plan_detail_outcomes_model", attributes, options);
+  return CoursePlanDetailOutcomesModel;
 };

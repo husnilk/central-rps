@@ -1,8 +1,10 @@
 const {
   DataTypes
 } = require('sequelize');
+const sequelize = require('../utils/connect');
+const CoursePlan = require('./course_plans');
+const CoursePlanLecturer = require('./course_plan_lecturers');
 
-module.exports = sequelize => {
   const attributes = {
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
@@ -14,7 +16,7 @@ module.exports = sequelize => {
       field: "id",
       references: {
         key: "id",
-        model: "users_model"
+        model: "users"
       }
     },
     nik: {
@@ -127,7 +129,7 @@ module.exports = sequelize => {
       field: "department_id",
       references: {
         key: "id",
-        model: "departments_model"
+        model: "departments"
       }
     },
     photo: {
@@ -175,7 +177,7 @@ module.exports = sequelize => {
       comment: null,
       field: "status"
     },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: null,
@@ -184,7 +186,7 @@ module.exports = sequelize => {
       comment: null,
       field: "created_at"
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: null,
@@ -204,6 +206,8 @@ module.exports = sequelize => {
       fields: ["department_id"]
     }]
   };
-  const LecturersModel = sequelize.define("lecturers_model", attributes, options);
-  return LecturersModel;
-};
+  const Lecturer = sequelize.define("lecturers", attributes, options);
+
+  Lecturer.belongsToMany(CoursePlan, { through: CoursePlanLecturer})
+
+  module.exports = Lecturer;

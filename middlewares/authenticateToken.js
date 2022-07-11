@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const UsersModel = require('../models/users');
 
 function authenticateToken(req, res, next) {
 
@@ -10,12 +11,12 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]
     
     if (token == null) return res.sendStatus(401)
-    
-    jwt.verify(token, secret, (err, user) => {
+
+    jwt.verify(token, secret, async (err, user) => {
         console.log(err)
         
         if (err) return res.sendStatus(403)
-        
+
         req.user = user
         
         next()

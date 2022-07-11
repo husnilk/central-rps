@@ -13,40 +13,40 @@ module.exports = sequelize => {
       comment: null,
       field: "id"
     },
-    course_syllabus_id: {
+    course_plan_detail_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "course_syllabus_id",
+      field: "course_plan_detail_id",
       references: {
         key: "id",
-        model: "course_syllabus_model"
+        model: "course_plan_details_model"
       }
     },
-    req_course_id: {
+    course_plan_reference_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "req_course_id",
+      field: "course_plan_reference_id",
       references: {
         key: "id",
-        model: "courses_model"
+        model: "course_plan_references_model"
       }
     },
-    req_level: {
-      type: DataTypes.STRING(255),
+    description: {
+      type: DataTypes.TEXT,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "req_level"
+      field: "description"
     },
     created_at: {
       type: DataTypes.DATE,
@@ -68,20 +68,20 @@ module.exports = sequelize => {
     }
   };
   const options = {
-    tableName: "course_syl_requirements",
+    tableName: "course_plan_detail_refs",
     comment: "",
     indexes: [{
-      name: "course_syl_requirements_course_syllabus_id_foreign",
+      name: "course_plan_detail_refs_course_plan_detail_id_foreign",
       unique: false,
       type: "BTREE",
-      fields: ["course_syllabus_id"]
+      fields: ["course_plan_detail_id"]
     }, {
-      name: "course_syl_requirements_req_course_id_foreign",
+      name: "course_plan_detail_refs_course_plan_reference_id_foreign",
       unique: false,
       type: "BTREE",
-      fields: ["req_course_id"]
+      fields: ["course_plan_reference_id"]
     }]
   };
-  const CourseSylRequirementsModel = sequelize.define("course_syl_requirements_model", attributes, options);
-  return CourseSylRequirementsModel;
+  const CoursePlanDetailRefsModel = sequelize.define("course_plan_detail_refs_model", attributes, options);
+  return CoursePlanDetailRefsModel;
 };

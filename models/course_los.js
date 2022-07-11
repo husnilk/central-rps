@@ -13,17 +13,17 @@ module.exports = sequelize => {
       comment: null,
       field: "id"
     },
-    course_syllabus_id: {
+    course_plan_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: null,
       primaryKey: false,
       autoIncrement: false,
       comment: null,
-      field: "course_syllabus_id",
+      field: "course_plan_id",
       references: {
         key: "id",
-        model: "course_syllabi_model"
+        model: "course_plans_model"
       }
     },
     type: {
@@ -89,15 +89,15 @@ module.exports = sequelize => {
     tableName: "course_los",
     comment: "",
     indexes: [{
+      name: "course_los_course_plan_id_foreign",
+      unique: false,
+      type: "BTREE",
+      fields: ["course_plan_id"]
+    }, {
       name: "course_los_parent_id_foreign",
       unique: false,
       type: "BTREE",
       fields: ["parent_id"]
-    }, {
-      name: "FK_course_los_course_syllabi",
-      unique: false,
-      type: "BTREE",
-      fields: ["course_syllabus_id"]
     }]
   };
   const CourseLosModel = sequelize.define("course_los_model", attributes, options);
