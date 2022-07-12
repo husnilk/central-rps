@@ -4,6 +4,9 @@ var router = express.Router();
 var authenticateToken = require('../middlewares/authenticateToken');
 const CourseLo = require('../models/course_los');
 const CourseLoDetail = require('../models/course_lo_details');
+const CoursePlanDetail = require('../models/course_plan_details');
+const CoursePlanDetailOutcome = require('../models/course_plan_detail_outcomes');
+const CurriculumLo = require('../models/curriculum_los');
 var sequelize = require('../utils/connect');
 
 /**
@@ -90,7 +93,6 @@ router.get('/:rpsId/cpmk/', authenticateToken, async (req, res) => {
                     message: "Data CPMK berhasil ditambahkan",
                     id: cpmk.id,
                     datetime: datetime
-                    
                 });
             }
         }catch(error){
@@ -102,23 +104,94 @@ router.get('/:rpsId/cpmk/', authenticateToken, async (req, res) => {
     /**
 * Update CPMK
 */
-router.put('/:cpmkId', async (req, res) => {
-    
+router.put('/:rpsId/cpmk/:cpmkId', authenticateToken, async (req, res) => {
+    let rpsId = req.params.rpsId;
+    let cpmkId = req.params.cpmkId;
+
+    const t = await sequelize.transaction();
+    try{
+        let cpmk = await CourseLo.findOne({
+            where:{
+                course_plan_id : rpsId,
+                id: cpmkId
+            }
+        });
+        if(cpmk != null){
+            cpmk.code = req.body.code;
+            cpmk.name = req.body.name;
+            await cpmk.save();
+
+            await sequelize.query('DELETE FROM course_lo_details WHERE course_lo_id=:course_lo_id', 
+            {
+                replacements: {
+                    course_lo_id: cpmkId
+                },
+                type: QueryTypes.DELETE
+            });
+            let clo_ids = req.body.clo_ids;
+            clo_ids.every(async (id) => {
+                await CourseLoDetail.create({
+                    course_lo_id: cpmkId,
+                    curriculum_lo_id: id
+                });
+            });
+        res.json({
+            status: "200",
+            message: "CPMK berhasil diupdate",
+            id: null,
+            datetime: new Date().toISOString()
+        });
+        }
+        t.commit();
+    }catch(error){
+        console.log(error);
+        t.rollback();
+        return res.json(error);
+    }
 });
 
 /**
 * Delete CPMK
 */
-router.delete('/:rpsId/cpmk/:cpmkId', async (req, res) => {
+router.delete('/:rpsId/cpmk/:cpmkId', authenticateToken, async (req, res) => {
+    let rpsId = req.params.rpsId;
+    let cpmkId = req.params.cpmkId;
 
-    CourseLo.belongsToMany();
-
-    var rpsId = req.params.rpsId;
-    var cpmkId = req.params.cpmkId;
-
-
-
-
+    const t = await sequelize.transaction();
+    try{
+        await sequelize.query('DELETE FROM course_lo_details WHERE course_lo_id=:course_lo_id', 
+            {
+                replacements: {
+                    course_lo_id: cpmkId
+                },
+                type: QueryTypes.DELETE
+            });
+        await sequelize.query('DELETE FROM course_plan_detail_outcomes WHERE course_lo_id = :course_lo_id', 
+        {
+            replacements: {
+                course_lo_id: cpmkId
+            },
+            type: QueryTypes.DELETE
+        });
+        await sequelize.query('DELETE FROM course_los WHERE id=:course_lo_id', 
+        {
+            replacements: {
+                course_lo_id: cpmkId
+            },
+            type: QueryTypes.DELETE
+        });
+        t.commit();
+        return res.json({
+            status: "200",
+            message: "CPMK berhasil dihapus",
+            id: null,
+            datetime: new Date().toISOString()
+        })
+    }catch(error){
+        console.log(error);
+        await t.rollback();
+        return res.json(error);
+    }
 });
     
-    module.exports = router;
+module.exports = router;
