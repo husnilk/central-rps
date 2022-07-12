@@ -14,6 +14,7 @@ router.get('/', authenticateToken, async function (req, res, next) {
     var user = req.user;
     try {
         var lecturer = await Lecturer.findByPk(user.id);
+        console.log(lecturer.id)
         var course_plans = await sequelize.query(
             'SELECT '+
             'course_plans.id,' + 
@@ -34,12 +35,18 @@ router.get('/', authenticateToken, async function (req, res, next) {
         }catch(error){
             console.log("Ok");
         }
-        
+        if(course_plans == undefined){
+            counts = 0;
+            rps = {};
+        }else{
+            counts = course_plans.length;
+            rps = course_plans;
+        }
         var datetime = new Date().toISOString();
         var response = {
-            counts: course_plans.length,
+            counts: counts,
             datetime: datetime,
-            rps: course_plans
+            rps: rps
         };
         
         res.json(response);
@@ -49,32 +56,76 @@ router.get('/', authenticateToken, async function (req, res, next) {
     * Create new RPS
     */
     router.post('/', authenticateToken, async (req, res) => {
+        
         var course_id = req.body.course_id;
         try{
+            
             var course = await Course.findByPk(course_id);
+            var revNumber = 0;
             console.log(course);
             if(course){
-                const course_plans = await course.getCoursePlans();
+                var qres = await sequelize.query('SELECT max(rev) as rev FROM course_plans WHERE course_id=:course_id GROUP BY course_id', {
+                    replacements: {
+                        course_id: course_id
+                    },
+                    type: QueryTypes.SELECT
+                });
+                console.log(qres[0].rev);
+                if(qres[0].rev == undefined){
+                    revNumber = 0;
+                }else{
+                    revNumber = qres[0].rev + 1;
+                }
+                
+                var coursePlan = await CoursePlan.create({
+                    course_id: course.id,
+                    name: course.name,
+                    code: course.code,
+                    rev: revNumber,
+                    alias_name: course.alias_name,
+                    credit: course.credit,
+                    semester: course.semester,
+                    mandatory: course.mandatory,
+                    description: course.description,
+                    created_by: req.user.id
+                });
+                if(coursePlan){
+                    var datetime = new Date().toISOString();
+                    var response = {
+                        status: "created",
+                        message: "RPS berhasil dibuat",
+                        rps_id: coursePlan.id,
+                        datetime: datetime
+                    };
+                    res.json(response);
+                }
             }
-        
         }catch(error){
             console.log(error);
         }
-        res.json(course);
     });
     
     /**
     * Show RPS Detail
     */
-    router.get('/:rpsId', (req, res) => {
-        
+    router.get('/:rpsId', authenticateToken, async (req, res) => {
+        var rpsId = req.params.rpsId;
+        console.log(rpsId);
+
+        var coursePlan = await CoursePlan.findByPk(rpsId);
+
+
+        res.json({});
     });
     
     /**
     * Edit RPS 
     */
-    router.put('/:rpsId', (req, res) => {
-        
+    router.put('/:rpsId', authenticateToken, async (req, res) => {
+        var rpsId = req.params.rpsId;
+        console.log(rpsId);
+
+        res.json({});
     });
     
     module.exports = router;

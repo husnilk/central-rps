@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../utils/connect');
-const CoursePlan = require('./course_plans');
 
 const attributes = {
   id: {
@@ -118,6 +117,5 @@ const options = {
   }]
 };
 const Course = sequelize.define("courses", attributes, options);
-Course.hasMany(CoursePlan);
 
 module.exports = Course;
