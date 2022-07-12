@@ -2,8 +2,6 @@ const {
   DataTypes
 } = require('sequelize');
 const sequelize = require('../utils/connect');
-const CoursePlan = require('./course_plans');
-const CoursePlanLecturer = require('./course_plan_lecturers');
 
   const attributes = {
     id: {
@@ -207,7 +205,5 @@ const CoursePlanLecturer = require('./course_plan_lecturers');
     }]
   };
   const Lecturer = sequelize.define("lecturers", attributes, options);
-
-  Lecturer.belongsToMany(CoursePlan, { through: CoursePlanLecturer})
 
   module.exports = Lecturer;

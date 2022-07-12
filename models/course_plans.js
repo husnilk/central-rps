@@ -180,4 +180,5 @@ const options = {
   }]
 };
 const CoursePlan = sequelize.define("course_plans", attributes, options);
+
 module.exports = CoursePlan;

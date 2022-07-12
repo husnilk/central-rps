@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/users');
 
 const generateAccessToken = function(username){
-    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: '1800s'});
+    return jwt.sign(username, process.env.JWT_SECRET, { expiresIn: '18000s'});
 }
 
 router.post('/login', async function (req, res, next) {
@@ -21,25 +21,33 @@ router.post('/login', async function (req, res, next) {
     
     //Check user login
     var datetime = new Date().toISOString();
-    bcrypt.compare(password, user.password)
-    .then( (result) => {
-        if(result == true){
-            var token = generateAccessToken({username: username, id: user.id});
-            var response = {
-                message: "Login berhasil",
-                token: token,
-                datetime: datetime
+    if(user != null){
+        bcrypt.compare(password, user.password)
+        .then( (result) => {
+            if(result == true){
+                var token = generateAccessToken({username: username, id: user.id});
+                var response = {
+                    message: "Login berhasil",
+                    token: token,
+                    datetime: datetime
+                }
+                res.json(response);
+            }else{
+                var response = {
+                    message: "Login gagal",
+                    datetime: datetime
+                }
+                res.json(response);
             }
-            res.json(response);
-        }else{
-            var response = {
-                message: "Login gagal",
-                datetime: datetime
-            }
-            res.json(response);
+        })
+    }else{
+        var response = {
+            message: "Login gagal",
+            datetime: datetime
         }
-    })
-
+        res.json(response);
+    }
+    
 });
 
 router.post('/logout', function (req, res, next) {
