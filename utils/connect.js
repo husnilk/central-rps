@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 const env = require('dotenv');
-const jwt = require('jsonwebtoken');
+
 
 env.config();
 
