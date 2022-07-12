@@ -31,10 +31,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/bo/rps', rpsRouter);
-app.use('/bo/rps/:rpsId/cpmk', cpmkRouter);
-app.use('/bo/rps/:rpsId/assessments', penilaianRouter);
-app.use('/bo/rps/:rpsId/references', referensiRouter);
-app.use('/bo/rps/:rpsId/weeks', mingguanRouter);
+app.use('/bo/rps', cpmkRouter);
+app.use('/bo/rps', penilaianRouter);
+app.use('/bo/rps', referensiRouter);
+app.use('/bo/rps', mingguanRouter);
 
 
 // catch 404 and forward to error handler

@@ -1,8 +1,8 @@
 const {
   DataTypes
 } = require('sequelize');
+const sequelize = require('../utils/connect');
 
-module.exports = sequelize => {
   const attributes = {
     id: {
       type: DataTypes.BIGINT.UNSIGNED,
@@ -66,7 +66,7 @@ module.exports = sequelize => {
         model: "course_los_model"
       }
     },
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: null,
@@ -75,7 +75,7 @@ module.exports = sequelize => {
       comment: null,
       field: "created_at"
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: null,
@@ -100,6 +100,5 @@ module.exports = sequelize => {
       fields: ["parent_id"]
     }]
   };
-  const CourseLosModel = sequelize.define("course_los_model", attributes, options);
-  return CourseLosModel;
-};
+  const CourseLo = sequelize.define("course_los", attributes, options);
+  module.exports =  CourseLo;
