@@ -4,9 +4,6 @@ var router = express.Router();
 var authenticateToken = require('../middlewares/authenticateToken');
 const CourseLo = require('../models/course_los');
 const CourseLoDetail = require('../models/course_lo_details');
-const CoursePlanDetail = require('../models/course_plan_details');
-const CoursePlanDetailOutcome = require('../models/course_plan_detail_outcomes');
-const CurriculumLo = require('../models/curriculum_los');
 var sequelize = require('../utils/connect');
 
 /**
