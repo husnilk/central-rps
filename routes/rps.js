@@ -212,7 +212,7 @@ router.get('/', authenticateToken, async function (req, res, next) {
                     // Get Weekly Plan
 
                     var coursePlanDetails = await CoursePlanDetail.findAll({
-                        attributes: ['id', 'week', 'material', 'method', ['student_activity','student_exp']],
+                        attributes: ['id', 'week', 'material', 'method', ['student_activity', 'student_exp']],
                         where: {
                             course_plan_id: coursePlan.id
                         },
