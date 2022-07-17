@@ -8,6 +8,9 @@ const CoursePlanReference = require('../models/course_plan_references');
 const Lecturer = require('../models/lecturers');
 var sequelize = require('../utils/connect')
 
+/**
+ * List referensi 
+ */
 router.get('/:rpsId/refs/', authenticateToken, async function (req, res) {
     var user = req.user;
     let rpsId = req.params.rpsId;
@@ -59,7 +62,7 @@ router.post('/:rpsId/refs', authenticateToken, async (req, res) => {
     let publisher = req.body.publisher;
     let year = req.body.year;
     let description = req.body.description;
-    let primary = req.body.primary;
+    let primary = 1;
     
     if(title == null || year == null || author == null || publisher == null){
         return res.json({
@@ -95,36 +98,45 @@ router.post('/:rpsId/refs', authenticateToken, async (req, res) => {
 });
 
 /**
- * Update Komponen Penilaian
+ * Update Referensi
  */
-router.put('/:rpsId/assessments/:assessmentId', authenticateToken, async (req, res) => {
-    let assessmentId = req.body.assessmentId;
-    let rpsId = req.body.rpsId;
-    let name = req.body.name;
-    let percentage = req.body.percentage;
-    console.log(req.params);
-    
-    console.log(name, percentage);
+router.put('/:rpsId/refs/:refId', authenticateToken, async (req, res) => {
+    let refId = req.params.refId;
+    let rpsId = req.params.rpsId;
 
-    if(name == null || percentage == null){
+    let reference_id = req.body.ref_id;
+    let course_plan_id = req.body.rps_id;
+    let title = req.body.title;
+    let author = req.body.author;
+    let publisher = req.body.publisher;
+    let year = req.body.year;
+    let description = req.body.description;
+    let primary = 1; 
+    
+    if(title == null || year == null || author == null || publisher == null){
         return res.json({
             status: "400",
-            message: "Nama dan Persentase harus diisi",
+            message: "Judul, Pengarang, Penerbit dan tahun harus diisi",
             id: null,
             datetime: new Date().toISOString()
         })
     }
     
     try{
-        var assessment = await CoursePlanAssessment.findByPk(assessmentId);
-        assessment.name = name;
-        assessment.percentage = percentage;
-        await assessment.save();
+        var reference = await CoursePlanReference.findByPk(refId);
+            reference.title = title;
+            reference.author = author;
+            reference.publisher = publisher;
+            reference.year = year;
+            reference.type = 1;
+            reference.description = description;
+            reference.primary = primary;
+        await reference.save();
 
         return res.json({
             status: "200",
-            message: "Data Komponen Penilaian berhasil diupdate",
-            id: assessment.id,
+            message: "Data Referensi berhasil diupdate",
+            id: reference.id,
             datetime: new Date().toISOString()
         });
     }catch(error){
@@ -134,35 +146,33 @@ router.put('/:rpsId/assessments/:assessmentId', authenticateToken, async (req, r
 });
 
 /**
- * Destroy Komponen Penilaian
+ * Destroy Referensi
  */
-router.delete('/:rpsId/assessments/:assessmentId', authenticateToken, async (req, res) => {
-    let assessmentId = req.params.assessmentId;
+router.delete('/:rpsId/refs/:refId', authenticateToken, async (req, res) => {
+    let refId = req.params.refId;
     let rpsId = req.params.rpsId;
-
-    console.log(assessmentId);
 
     const t = await sequelize.transaction();
     try{
-        await sequelize.query('DELETE FROM course_plan_detail_assessments WHERE course_plan_assessment_id = :assessment_id', 
+        await sequelize.query('DELETE FROM course_plan_detail_refs WHERE course_plan_reference_id = :reference_id', 
             {
                 replacements: {
-                    assessment_id: assessmentId
+                    reference_id : refId
                 },
                 type: QueryTypes.DELETE
             });
-        await sequelize.query('DELETE FROM course_plan_assessments WHERE id = :assessment_id ', 
+        await sequelize.query('DELETE FROM course_plan_references WHERE id = :reference_id ', 
         {
             replacements: {
-                assessment_id: assessmentId
+                reference_id: refId
             },
             type: QueryTypes.DELETE
         });
         t.commit();
         return res.json({
             status: "200",
-            message: "Komponen penilaian berhasil dihapus",
-            id: assessmentId,
+            message: "Referensi berhasil dihapus",
+            id: refId,
             datetime: new Date().toISOString()
         })
     }catch(error){
